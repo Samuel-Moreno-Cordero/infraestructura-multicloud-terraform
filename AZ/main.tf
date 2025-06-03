@@ -1,33 +1,32 @@
 provider "azurerm" {
   features {}
 
-  subscription_id = "588a7de8-fbb2-45a8-bb90-34d2e6fb773f"  # Pon aquí tu subscription_id real
+  subscription_id = "588a7de8-fbb2-45a8-bb90-34d2e6fb773f"
 }
 
-
-resource "azurerm_resource_group" "rg" {
-  name     = var.resource_group_name
-  location = var.location
+# ⚠️ Solo se referencia el grupo de recursos, no se crea ni destruye
+data "azurerm_resource_group" "rg" {
+  name = var.resource_group_name
 }
 
 resource "azurerm_virtual_network" "vnet" {
   name                = "vnet-${var.environment}"
   address_space       = ["10.0.0.0/16"]
-  location            = azurerm_resource_group.rg.location
-  resource_group_name = azurerm_resource_group.rg.name
+  location            = data.azurerm_resource_group.rg.location
+  resource_group_name = data.azurerm_resource_group.rg.name
 }
 
 resource "azurerm_subnet" "subnet" {
   name                 = "subnet-${var.environment}"
-  resource_group_name  = azurerm_resource_group.rg.name
+  resource_group_name  = data.azurerm_resource_group.rg.name
   virtual_network_name = azurerm_virtual_network.vnet.name
   address_prefixes     = ["10.0.1.0/24"]
 }
 
 resource "azurerm_network_interface" "nic" {
   name                = "nic-${var.environment}"
-  location            = azurerm_resource_group.rg.location
-  resource_group_name = azurerm_resource_group.rg.name
+  location            = data.azurerm_resource_group.rg.location
+  resource_group_name = data.azurerm_resource_group.rg.name
 
   ip_configuration {
     name                          = "ipconfig1"
@@ -38,8 +37,8 @@ resource "azurerm_network_interface" "nic" {
 
 resource "azurerm_linux_virtual_machine" "vm" {
   name                = "vm-${var.environment}"
-  resource_group_name = azurerm_resource_group.rg.name
-  location            = azurerm_resource_group.rg.location
+  resource_group_name = data.azurerm_resource_group.rg.name
+  location            = data.azurerm_resource_group.rg.location
   size                = var.vm_size
   admin_username      = var.admin_username
   network_interface_ids = [
