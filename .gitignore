@@ -1,31 +1,32 @@
-# Ignore Terraform working directories
+# Ignorar los directorios de trabajo de Terraform
 **/.terraform/
 
-# Ignore Terraform state files
+# Ignorar los archivos de estado de Terraform
 **/*.tfstate
 **/*.tfstate.*
 
-# Ignore crash log files
+# Ignorar los archivos de registro de fallos
 crash.log
 crash.*.log
 
-# Ignore Terraform variable files (may contain sensitive data)
+# Ignorar los archivos de variables de Terraform (pueden contener datos sensibles)
 **/*.tfvars
 **/*.tfvars.json
 
-# Ignore Terraform override files (local overrides)
+# Ignorar los archivos de sobrescritura de Terraform (modificaciones locales)
 override.tf
 override.tf.json
 *_override.tf
 *_override.tf.json
 
-# Ignore lock info files created during terraform apply
+# Ignorar los archivos de bloqueo creados durante terraform apply
 .terraform.tfstate.lock.info
 
-# Ignore terraform plan files
+# Ignorar los archivos de plan de Terraform
 *.tfplan
 
-# Ignore CLI configuration files
+# Ignorar los archivos de configuración del CLI
 .terraformrc
 terraform.rc
+
 
