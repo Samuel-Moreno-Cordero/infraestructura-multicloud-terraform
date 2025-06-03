@@ -1,0 +1,34 @@
+name: Terraform Destroy
+
+on:
+  workflow_dispatch:
+
+jobs:
+  destroy-aws:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./AWS
+    steps:
+      - uses: actions/checkout@v3
+      - uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: 1.5.6
+      - run: terraform init
+      - run: terraform destroy -auto-approve -var="admin_password=${{ secrets.AWS_ADMIN_PASSWORD }}"
+
+  destroy-azure:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./AZ
+    steps:
+      - uses: actions/checkout@v3
+      - uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: 1.5.6
+      - uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+      - run: terraform init
+      - run: terraform destroy -auto-approve -var="admin_password=${{ secrets.AZURE_ADMIN_PASSWORD }}"
