@@ -1,4 +1,4 @@
-name: Deploy Infraestructura en Azure y AWS
+name: Deploy infra multicloud
 
 on:
   push:
@@ -6,56 +6,46 @@ on:
       - main
 
 jobs:
-  terraform-azure:
-    name: Deploy en Azure
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./azure
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v2
-        with:
-          terraform_version: 1.6.6
-
-      - name: Login to Azure
-        uses: azure/login@v1
-        with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
-
-      - name: Terraform Init
-        run: terraform init
-
-      - name: Terraform Apply
-        run: terraform apply -auto-approve
-
-  terraform-aws:
+  deploy-aws:
     name: Deploy en AWS
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ./aws
+        working-directory: ./aws  # <-- Asegúrate que esto coincida con el nombre real
     steps:
-      - name: Checkout
+      - name: Checkout repo
         uses: actions/checkout@v3
 
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v2
-        with:
-          terraform_version: 1.6.6
-
-      - name: Configure AWS credentials
+      - name: Configurar credenciales AWS
         uses: aws-actions/configure-aws-credentials@v2
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: eu-west-1
+          aws-region: us-east-1
 
-      - name: Terraform Init
+      - name: Init Terraform
         run: terraform init
 
-      - name: Terraform Apply
+      - name: Apply Terraform
+        run: terraform apply -auto-approve
+
+  deploy-azure:
+    name: Deploy en Azure
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./AZ 
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Login Azure
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Init Terraform
+        run: terraform init
+
+      - name: Apply Terraform
         run: terraform apply -auto-approve
