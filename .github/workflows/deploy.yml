@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ./aws  # <-- Asegúrate que esto coincida con el nombre real
+        working-directory: ./AWS
     steps:
       - name: Checkout repo
         uses: actions/checkout@v3
